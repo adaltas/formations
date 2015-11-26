@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>ADALTAS - HBase</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+  <div style="position:absolute; top:20px; left:20px;">
+  <p><img src="../img/adaltas.png" width="200px" style="margin: 10px 0" /></p>
+  </div>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        
+<section>
+<h1>HBase</h1>
+<h2>Low latency, columnar Database</h2>
+<img src="./hbase.png" style="border: none" />
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Prerequisite
+
+CAP Theorem   
+It is impossible for a distributed system to be
+
+*   Consistent   
+all nodes see the same data at the same time
+*   Available   
+a guarantee that every request receives a response about whether it succeeded or failed
+*   Partition tolerant   
+the system continues to operate despite arbitrary partitioning due to network failures
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## What is HBase ?
+
+*   FOSS NoSQL DB modeled after Google's Big Table
+*   On top of HDFS !
+*   Consistent, multidimentional, Sorted  map (key-value database)
+*   (Key, column family, column, timetamp) -> value
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## What is NOT HBase ?
+
+*   Not a relationnal (SQL) database
+*   No joins out-of-the box
+*   No fancy nor sophisticated language
+*   No transactions
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## HBase cool features
+
+*   Linear scalability
+*   Automatic/manual sharding
+*   Failover support / fault tolerant
+*   Strictly consistent: R &amp; W
+*   “random” r/w
+*   Block cache for RT applications (fast Data) (ADVANCED usage)
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Tools and Interface
+
+*   Integrates with Hadoop MR (and DAGs)
+*   Very easy Java API
+*   Thrift and REST API
+*   Bulk loading with Map Reduce
+*   Cross cluster replication tools
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Example
+
+*   Store user information and friends
+*   Key: username
+*   Column families: info and friends
+*   inside “info”: 
+*   columns: properties (eg email)
+*   values: property values
+*   inside friends: 
+*   columns: friends username
+*   values: age, phone number, whatever
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+<h2>Example: representation</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Key</th>
+			<th>CF</th>
+			<th>Col.</th>
+			<th>Ts</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Pierre</td>
+			<td>info</td>
+			<td>age</td>
+			<td>-</td>
+			<td>24</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td>email</td>
+			<td>84078</td>
+			<td>pierre@adaltas.com</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>63746</td>
+			<td>pierre@gmail.com</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>43414</td>
+			<td>pierre@hotmail.com</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>friends</td>
+			<td>ninon</td>
+			<td>-</td>
+			<td>1990-11-26</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td>jeanne</td>
+			<td>-</td>
+			<td>1995-03-01</td>
+		</tr>
+	</tbody>
+</table>
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## How to use it ?
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Data Model
+
+*   Untyped keys & values (byte arrays)
+*   Column are grouped by column family (more-or-less like Hive partitions)
+*   CF are defined STATICALLY at creation
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Data Insertion
+
+*   Not atomic !!!
+*   HBase keeps 3 versions of your data   
+    (using timestamp as a subkey)   
+    get latest value by default
+*   No need to fill all columns nor Cfs
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Hadoop integration
+
+*   HBase table as input of MR
+*   MR output into HBase table
+*   “Bulk load” HDFS files into Hbase (it uses a MR job)
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Basic Operations
+
+*   Create a table:   
+    create 'pierrotws', 'info'   
+    alter 'pierrotws', 'friends'   
+*   View table structure:   
+    describe 'pierrotws'    
+*   Remove a table:   
+    disable + drop 'pierrotws'   
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Example
+
+Inserting   
+```
+put 'pierrotws', 'pierre', 'friends:ninon', '1990-11-26'
+put 'pierrotws', 'pierre', 'friends:jeanne', '1995-03-01'
+put 'pierrotws', 'pierre', 'info:email', 'pierrotws@adaltas.com'
+put 'pierrotws', 'pierre', 'info:age', '24'
+```
+Getting   
+```
+scan 'pierrotws'
+```
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## How does it work ?
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Sharding
+
+*   Tables are splitted into Regions
+*   Regions defined by start/end of keys
+*   Regions are assigned to RegionServers (workers of HBase, eq. 
+    to NodeManagers for YARN, DataNodes for HDFS)
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## HFDS Storage
+
+*   Hfile   
+    Optimised SequenceFile containing Index and data   
+    Use tombstone marker for deletion (HDFS cannot update a file)   
+    Post 'insert' compaction algorithm to optimize storage   
+*   Edit logs   
+*   In-memory cache   
+</script>
+</section>
+
+<section>
+<h2>HBase Components</h2>
+<img src="arch.jpg" />
+</section>
+
+<section>
+<h2>HBase in Hadoop</h2>
+<img src="hadoop_arch.jpg" />
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Failure
+
+*   Data failures handled by HDFS
+*   RS failures handled by HbaseMaster
+*   HMaster failover supported
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## When to use HBase ?
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Use Case
+
+*   Fast random access
+*   Large amount of data/writing
+*   Append-style modifications (no read-modify-write complex queries)
+*   Consistency over Availability
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Work-In-Progress
+
+*   Stability
+*   Performance improvements
+*   RS on YARN
+*   Rise of the Phoenix
+</script>
+</section>
+
+      </div>
+
+    </div>
+
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>

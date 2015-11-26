@@ -1,0 +1,254 @@
+<!doctype html>
+
+<!--
+
+                               ____                  
+                            _.' :  `._               
+                        .-.'`.  ;   .'`.-.           
+               __      / : ___\ ;  /___ ; \      __  
+             ,'_ ""=-.:__;".-.";: :".-.":__;.-="" _`,
+             :' `.t""=-.. '<@.`;_  ',@:` ..-=""j.' `;
+                  `:-.._J '-.-'L__ `-.-' L_..-;'     
+                    "-.__ ;  .-"  "-.  : __.-"       
+                        L ' /.======.\ ' J           
+                         "-.   "__"   .-"            
+                        __.l"-:_JL_;-";.__           
+                     .-j/'.;  ;""""  / .'\"-.        
+                   .' /:`. "-.:     .-" .';  `.      
+                .-"  / ;  "-. "-..-" .-"  :    "-.   
+             .+"-.  : :      "-.__.-"      ;-._   \  
+             ; \  `.; ;                    : : "+. ; 
+             :  ;   ; ;                    : ;  : \: 
+             ;  :   ; :                    ;:   ;  : 
+            : \  ;  :  ;                  : ;  /  :: 
+            ;  ; :   ; :                  ;   :   ;: 
+            :  :  ;  :  ;                : :  ;  : ; 
+            ;\    :   ; :                ; ;     ; ; 
+            : `."-;   :  ;              :  ;    /  ; 
+             ;    -:   ; :              ;  : .-"   : 
+             :\     \  :  ;            : \.-"      : 
+              ;`.    \  ; :            ;.'_..-=  / ; 
+              :  "-.  "-:  ;          :/."      .'  :
+               \         \ :          ;/  __        :
+                \       .-`.\        /t-""  ":-+.   :
+                 `.  .-"    `l    __/ /`. :  ; ; \  ;
+                   \   .-" .-"-.-"  .' .'j \  /   ;/ 
+                    \ / .-"   /.     .'.' ;_:'    ;  
+                     :-""-.`./-.'     /    `.___.'   
+                           \ `t  ._  /               
+                            "-.t-._:'                
+
+-->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>ADALTAS - Big Data</title>
+    
+    <meta name="description" content="impress.js is a presentation tool based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com." />
+    <meta name="author" content="Bartek Szopka" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+
+    <link href="../impress.js/css/impress-demo.css" rel="stylesheet" />
+    
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+</head>
+
+<body class="impress-not-supported">
+
+<div style="position:absolute; top:20px; left:20px;">
+<p><img src="../img/adaltas.png" width="200px" style="margin: 10px 0" /></p>
+</div>
+
+<div class="fallback-message">
+    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</div>
+
+<div id="impress">
+
+    <div id="bored" class="step slide" data-x="-1000" data-y="-1500">
+      <q>
+        <h1>Big Data with Hadoop</h1>
+      </q>
+    </div>
+
+    <div class="step slide" data-x="0" data-y="-1500">
+      <q>
+        <h1>Hadoop: Big Data Ecosystem</h1>
+        <p>Fundamental concepts</p>
+        <p>and</p>
+        <p>Major composants</p>
+      </q>
+    </div>
+
+    <div class="step slide" data-x="1000" data-y="-1500">
+      <q>
+        <h1>What is Big Data? The 3 V’s</h1>
+      </q>
+      <ul>
+        <li>
+          <b>Volume</b>
+          <p>A significant amount of data, more than easily handled by a single database, computer or spreadsheet</p>
+        </li>
+        <li>
+          <b>Velocity</b>
+          <p>Process incoming data and get answers quickly enough, as to  not delay research or critical decision making (each years more true)</p>
+        </li>
+        <li>
+          <b>Variety</b>
+          <p>Different kind of information, with a mix of data types and varying degrees of structures </p>
+        </li>
+        <li>
+          <b>Veracity, Value, ...</b>
+        </li>
+      </ul>
+    </div>
+
+    <div class="step" data-x="0" data-y="0" data-scale="4">
+      <span class="try">because size matter</span>
+      <h1>Volume</h1>
+      <p><strong>Facebook</strong> 400 PB data lake</p>
+      <p><strong>Criteo</strong> 900 m2 &amp; 5 000 servers datacenter</p>
+    </div>
+
+    <div class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="5">
+      <span class="try">after is too late</span>
+      <h1>Velocity</h1>
+      <p><strong>Fast processing</strong> - Google queries are resolved in a subsecond process</p>
+      <p><strong>Batch processing</strong> - One night to analyze the day</p>
+    </div>
+
+    <div class="step" data-x="3500" data-y="2100" data-rotate="180" data-scale="3">
+      <span class="try">RDBMs got it all wrong</span>
+      <h1>Variety</h1>
+      <small>Classical distribution in company</small>
+      <p><strong>20 %</strong> structured
+      <p><strong>80 %</strong> unstructured</p>
+    </div>
+
+    <div class="step" data-x="5000" data-y="4000" data-rotate="90" data-scale="3">
+      <span class="try">there is value everywhere</span>
+      <h1>Data Composition</h1>
+      <p><strong>Structured</strong>: RDBMS</p>
+      <p><strong>Unstructured</strong>: text, image
+      <p><strong>Semi-structured</strong>: JSON, XML</p>
+    </div>
+
+    <div class="step" data-x="3000" data-y="3000" data-z="-3000" data-rotate="300" data-scale="2">
+      <h1>Why Big Data ?</h1>
+      <p>Data is the new Oil!</p>
+    </div>
+    
+    <div class="step" data-x="-1000" data-y="1500" data-rotate="-100" data-scale="2">
+      <q>
+        <h1>The origin of love</h1>
+        <p>Doug Cutting's Nutch (2002)</p>
+        <p>GoogleFS (2003)</p>
+        <p>Google MR Algorithm (2004)<p>
+        <p>Doug Cutting Hadoop (2004)</p>
+        <p>Apache Hadoop (2008)</p>
+      </q>
+    </div>
+    
+    <div class="step" data-x="-2000" data-y="2500" data-rotate="50" data-scale="2" data-rotate="-100">
+      <q>
+        <h1>Hadoop 1.x</h1>
+        <p>HDFS</p>
+        <p>MapReduce</p>
+        <p>Pig, Hive, Oozie, HBase, ...</p>
+      </q>
+    </div>
+    
+    <div class="step" data-x="-3500" data-y="2800" data-rotate="600" data-scale="2">
+        <q>
+          <h1>Hadoop 2.x</h1>
+          <p>HDFS + <strong>YARN</strong> + ?MapReduce?</p>
+          <img src="./v1_to_v2.png" />
+        </q>
+    </div>
+
+    <div class="step" data-x="-3000" data-y="1200" data-scale="2">
+      <q>
+        <h1>Cluster OS</h1>
+        <img src="./cluster_os.png" width="100%" />
+      </q>
+    </div>
+    
+    <div class="step" data-x="-700" data-y="3000" data-scale="2" data-rotate="-30">
+      <h1>Hadoop distributions</h1>
+      <ul>
+        <li>HDP: Hortonworks distribution</li>
+        <li>CDH: Cloudera distribution</li>
+        <li>MapR: MapR distribution</li>
+        <li>Pivotal, IBM, Oracle…</li>
+      </ul>
+    </div>
+    
+    <div class="step slide" data-x="2000" data-y="4000">
+      <span class="try">Why 80% of HadoopSummit attendants carry OSX laptops.</span>
+      <p>&nbsp;</p>
+      <h1>A proper Environment</h1>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <ul>
+        <li>Mac OSX, Linux, Linux VM</li>
+        <li>64 bits OS, at least 8GB, although 16GB is preferred</li>
+        <li>GIT or Mercurial</li>
+        <li>Text Editor: atom.io, SublimeText</li>
+        <li>Java Editor: IntelliJ IDEA, Eclipse</li>
+        <li>Dark Theme</li>
+      </ul>
+    </div>
+    
+    <div class="step slide" data-x="3000" data-y="4000">
+      <span class="try">It all depends on the project culture</span>
+      <p>&nbsp;</p>
+      <h1>Where to search</h1>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <ul>
+        <li>Google</li>
+        <li>Blogs</li>
+        <li>Issues Trackers</li>
+        <li>Source code: GitHub &amp; GrepCode</li>
+        <li>Wikis</li>
+        <li>Official Websites</li>
+        <li>Cloudera, HW, Pivotal... documentations</li>
+      </ul>
+    </div>
+    
+    <div id="ing" class="step" data-x="3500" data-y="-850" data-rotate="270" data-scale="6">
+        <p>Now is the <b class="positioning">time</b> for <b class="rotating">questions</b> before we move <b class="scaling">further</b></p>
+    </div>
+
+    <div id="imagination" class="step" data-x="6700" data-y="-300" data-scale="6">
+        <p>the only <b>limit</b> is your <b class="imagination">imagination</b></p>
+    </div>
+
+    <div id="source" class="step" data-x="6300" data-y="2000" data-rotate="20"  data-rotate-x="-40" data-rotate-y="10" data-scale="4">
+        <p>want to know more?</p>
+        <q><a href="http://github.com/bartaz/impress.js">use the source</a>, Luke!</q>
+    </div>
+
+    <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10">
+    </div>
+
+</div>
+
+<script>
+if ("ontouchstart" in document.documentElement) { 
+    document.querySelector(".hint").innerHTML = "<p>Tap on the left or right to navigate</p>";
+}
+</script>
+
+<script src="../impress.js/js/impress.js"></script>
+<script>impress().init();</script>
+
+
+</body>
+</html>

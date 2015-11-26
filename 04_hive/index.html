@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>ADALTAS - Hive</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+  <div style="position:absolute; top:20px; left:20px;">
+  <p><img src="../img/adaltas.png" width="200px" style="margin: 10px 0" /></p>
+  </div>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        
+<section>
+<h1>Hive</h1>
+<h2>The Data Warehouse</h2>
+<img src="./hive.png" />
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Brief introduction
+
+*   Top-Level Apache Project
+*   Started at Facebook in 2007
+*   SQL to MR Generator
+*   Metadata Storage
+*   No magic here, still batch-oriented
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Where to get help
+
+*   Use the [official wiki](https://cwiki.apache.org/confluence/display/Hive/Home)   
+    messy but complete
+*   Search Jira if you have problems
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Why ?
+
+*   Data analysts love SQL
+*   Easier and often faster than MR
+*   Wide acceptance inside the enterprise   
+    (enterprise ready)
+*   REPL client (`hive`, `beeline`)
+*   JDBC and ODBC
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Hive Applications
+
+*   Log processing
+*   Text mining
+*   Document indexing
+*   Business Intelligence
+*   Etc..
+
+Any Batch-oriented data analysis !
+</script>
+</section>
+
+<section>
+  <h2>Hive Architecture</h2>
+  <img src="./arch.png" />
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Data Model
+
+*   Database
+*   Tables
+*   Partitions   
+*   SQL-like query language called HiveQL
+    Ex: No Update statement
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Data types
+
+*   Numeric Types: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
+*   Date/Time Types: TIMESTAMP, DATE
+*   String Types: STRING, VARCHAR
+*   Complex Types: ARRAY, MAP, STRUCT, UNIONTYPE
+*   Misc Types: BOOLEAN, BINARY
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Example
+
+```sql
+Create table toto(
+s 	STRING,
+i 	INT,
+a	ARRAY<MAP<String, STRUCT<foo: FLOAT, bar: FLOAT>>>);
+
+SELECT s, I, a[23]['foobar'].bar FROM toto
+```
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Metastore
+
+*   Database: namespace containing a set of tables
+*   Tables/partitions definitions   
+    (column types, HDFS directory of table)
+*   Stats
+*   Any RDBMS: derby, mySQL, postgreSQL, etc..
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Inside HDFS
+
+*   Managed or external location
+*   Data Warehouse directory (DWH)  
+    Ex: /user/hive/warehouse
+*   Tables are subdirectory of DWH
+*   Partitions are subdirectories of DWH
+*   Data stored in files
+*   SequenceFiles, ORC, Parquet, Custom Ser/De
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Basic Commands
+
+List tables/databases/function
+```
+hive> show databases;
+hive> show tables;
+```
+Describe tables/function
+```
+hive> describe $tablename
+hive> describe extended $tablename
+```
+SQL query
+```
+hive> SELECT * … LIMIT 10
+```
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Table Manipulation
+
+*   CREATE
+*   SHOW
+*   ALTER
+*   DROP
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Create Tables
+
+*   Not so hard   
+    CREATE TABLE foo (id INT, msg STRING);
+*   Default table layout   
+    Text files; fields delimited by \001; rows delimited by \n
+*   Should use more optimised layout
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Partitions
+
+*   HDFS directories
+*   Data pruning
+*   Static and dynamic partitions
+*   Don’t abuse (small files problem)
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Bucketing
+ 
+*   Hash defined   
+*   Must be properly loaded: as many reducers as buckets   
+*   May be sorted
+*   May be combined with partitions
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Partitionning vs Bucketing
+
+CREATE 	TABLE order (
+username 	STRING,
+ord				STRING,
+amount		DOUBLE
+) PARTITIONED BY (company STRING)
+CLUSTERED BY (username) INTO 25 BUCKETS;
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Conclusion
+
+*   SQL over Hadoop
+*   Highly customizable
+*   MR compiler
+*   Wait… Did I say Map Reduce ?
+</script>
+</section>
+
+      </div>
+
+    </div>
+
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
