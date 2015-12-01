@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>ADALTAS - Hive</title>
+    <title>ADALTAS - HBase</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -46,217 +46,139 @@
       <div class="slides">
         
 <section>
-<h1>Hive</h1>
-<h2>The Data Warehouse</h2>
-<img src="./hive.png" style="border:none;background:transparent" />
+<h1>Flume</h1>
+<img src="./flume.png" style="border:none;background:transparent" />
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Brief introduction
+## What Is Flume?
 
-*   Top-Level Apache Project
-*   Started at Facebook in 2007
-*   SQL to MR Generator
-*   Metadata Storage
-*   No magic here, still batch-oriented
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Where to get help
-
-*   Use the [official wiki](https://cwiki.apache.org/confluence/display/Hive/Home)   
-    messy but complete
-*   Search Jira if you have problems
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Why ?
-
-*   Data analysts love SQL
-*   Easier and often faster than MR
-*   Wide acceptance inside the enterprise   
-    (enterprise ready)
-*   REPL client (`hive`, `beeline`)
-*   JDBC and ODBC
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Hive Applications
-
-*   Log processing
-*   Text mining
-*   Document indexing
-*   Business Intelligence
-*   Etc..
-
-Any Batch-oriented data analysis !
+*   Continuous data ingestion system
+*   Designed for (Hadoop) BigData ecosystem
+*   Possesses a lot of Sinks and Sources 
+*   Just a monolithic agent, running on one machine.
 </script>
 </section>
 
 <section>
-  <h2>Hive Architecture</h2>
-  <img src="./arch.png" />
+<h2>Flume Agent</h2>
+<img src="./agent.jpg" style="border: none" />
+</section>
+
+<section>
+<h2>Flume Pipelining</h2>
+<img src="./pipeline.jpg" style="border: none" />
+<ul>
+  <li>Permits a distributed pipeline architecture</li>
+  <li>Customizable and extendable (java override)</li>
+</ul>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Data Model
-
-*   Database
-*   Tables
-*   Partitions   
-*   SQL-like query language called HiveQL
-    Ex: No Update statement
+## Flume Routing
+<img src="./routing.jpg" style="border: none" />
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Data types
+## Flume Event
 
-*   Numeric Types: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
-*   Date/Time Types: TIMESTAMP, DATE
-*   String Types: STRING, VARCHAR
-*   Complex Types: ARRAY, MAP, STRUCT, UNIONTYPE
-*   Misc Types: BOOLEAN, BINARY
+Simple Schema
+
+*   Header: Map<String,String>
+    String Key-Value
+    A bit like HTTP headers
+*   Body: bytes[]
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Example
+## Sources (Data Input)
 
-```sql
-Create table toto(
-s 	STRING,
-i 	INT,
-a	ARRAY<MAP<String, STRUCT<foo: FLOAT, bar: FLOAT>>>);
+*   Event-driven or polling-based
+*   Examples:
+    *   Avro and Thrift
+    *   HTTP
+    *   Java Message Service
+    *   Exec (ingest output of a program)
+    *   Netcat
+</script>
+</section>
 
-SELECT s, I, a[23]['foobar'].bar FROM toto
+<section data-markdown>
+<script type="text/template">
+## Sinks (Data Output)
+
+*  Polling-based only   
+*  Process batch of events at a time   
+*  Examples:    
+    *   HDFS
+    *   HBase
+    *   Avro/Thrift
+    *   File (local filesystem)
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Channels
+
+*  Passive Component   
+*  Channel type determines reliability       
+*  Channel type:
+    *   RDBMS/JDBC: performance issue
+    *   Memory: lower latency, but limited
+    *   File: provides durability over performance
+    *   Kafka: Not completely mature 
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Interceptors
+
+*   Can be used to
+    *   Add/delete/modify headers
+    *   Transform data
+*   Can be written/overriden easily
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## configuration
+
+```
+agent.channels = mem1 [...]
+agent.sources = netcat1 [...]
+agent.sinks = hdfs1 [...]
+agent.channels.mem1.type = memory
+agent.channels.mem1.capacity = 100000000
+…
+agent.sources.netcat1.type = netcat
+agent.sources.netcat1.channels = mem1
+…
+
+agent.sinks.hdfs1.type = hdfs
+…
 ```
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Metastore
+## When to use it ?
 
-*   Database: namespace containing a set of tables
-*   Tables/partitions definitions   
-    (column types, HDFS directory of table)
-*   Stats
-*   Any RDBMS: derby, mySQL, postgreSQL, etc..
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Inside HDFS
-
-*   Managed or external location
-*   Data Warehouse directory (DWH)  
-    Ex: /user/hive/warehouse
-*   Tables are subdirectory of DWH
-*   Partitions are subdirectories of DWH
-*   Data stored in files
-*   SequenceFiles, ORC, Parquet, Custom Ser/De
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Basic Commands
-
-List tables/databases/function
-```
-hive> show databases;
-hive> show tables;
-```
-Describe tables/function
-```
-hive> describe $tablename
-hive> describe extended $tablename
-```
-SQL query
-```
-hive> SELECT * … LIMIT 10
-```
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Table Manipulation
-
-*   CREATE
-*   SHOW
-*   ALTER
-*   DROP
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Create Tables
-
-*   Not so hard   
-    CREATE TABLE foo (id INT, msg STRING);
-*   Default table layout   
-    Text files; fields delimited by \001; rows delimited by \n
-*   Should use more optimised layout
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Partitions
-
-*   HDFS directories
-*   Data pruning
-*   Static and dynamic partitions
-*   Don’t abuse (small files problem)
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Bucketing
- 
-*   Hash defined   
-*   Must be properly loaded: as many reducers as buckets   
-*   May be sorted
-*   May be combined with partitions
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Partitionning vs Bucketing
-
-CREATE 	TABLE order (
-username 	STRING,
-ord				STRING,
-amount		DOUBLE
-) PARTITIONED BY (company STRING)
-CLUSTERED BY (username) INTO 25 BUCKETS;
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Conclusion
-
-*   SQL over Hadoop
-*   Highly customizable
-*   MR compiler
-*   Wait… Did I say Map Reduce ?
+*   Data pipelining in general
+*   Event processing
+*   Data aggregation
+*   Example
+    *   Log aggregation
+    *   Supervising metrics
 </script>
 </section>
 

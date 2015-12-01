@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>ADALTAS - Hive</title>
+    <title>ADALTAS - HBase</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -46,217 +46,149 @@
       <div class="slides">
         
 <section>
-<h1>Hive</h1>
-<h2>The Data Warehouse</h2>
-<img src="./hive.png" style="border:none;background:transparent" />
+<h1>Zookeeper</h1>
+<h2>Highly reliable distributed coordination</h2>
+<img src="./zookeeper.png" style="border:none;background:transparent;position:relative;width:15%" />
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Brief introduction
+## Distributed system
 
-*   Top-Level Apache Project
-*   Started at Facebook in 2007
-*   SQL to MR Generator
-*   Metadata Storage
-*   No magic here, still batch-oriented
+Wikipedia: A distributed system consists   
+of multiple computers that communicate   
+through a computer network and interact   
+with each other to achieve a common goal
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Where to get help
+## In a perfect world
 
-*   Use the [official wiki](https://cwiki.apache.org/confluence/display/Hive/Home)   
-    messy but complete
-*   Search Jira if you have problems
+*   Network is reliable
+*   Latency is zero
+*   Bandwith is infinite
+*   Topologies are static
+*   Network is homogeneous
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Why ?
+## Coordination
 
-*   Data analysts love SQL
-*   Easier and often faster than MR
-*   Wide acceptance inside the enterprise   
-    (enterprise ready)
-*   REPL client (`hive`, `beeline`)
-*   JDBC and ODBC
+An act that multiple nodes must perform together:
+
+*   Group membership (eg: shards)
+*   Locking (eg: for consistency)
+*   Publish Subscribe
+*   Leader election
+*   Synchronization (eg: redondancy)
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Hive Applications
+## What does it do?
 
-*   Log processing
-*   Text mining
-*   Document indexing
-*   Business Intelligence
-*   Etc..
-
-Any Batch-oriented data analysis !
+Zookeeper allows distributed processes   
+to coordinate through a   
+shared hierarchical name space   
+of data registers
 </script>
-</section>
-
-<section>
-  <h2>Hive Architecture</h2>
-  <img src="./arch.png" />
 </section>
 
 <section data-markdown>
 <script type="text/template">
 ## Data Model
 
-*   Database
-*   Tables
-*   Partitions   
-*   SQL-like query language called HiveQL
-    Ex: No Update statement
+*   Hierarchical name space
+*   Each node in the namespace is called a ZNode
+*   Any Znode has data (byte[]) and can have children   
+    Node1: 'foo'   
+    Child1: 'bar'
+*   Znode path: /Node1/Child1 → 'bar'
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Data types
+## Features
 
-*   Numeric Types: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
-*   Date/Time Types: TIMESTAMP, DATE
-*   String Types: STRING, VARCHAR
-*   Complex Types: ARRAY, MAP, STRUCT, UNIONTYPE
-*   Misc Types: BOOLEAN, BINARY
+*   ACL
+*   Timestamps
+*   Versionning
+*   Locks
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Example
+## Znodes
 
-```sql
-Create table toto(
-s 	STRING,
-i 	INT,
-a	ARRAY<MAP<String, STRUCT<foo: FLOAT, bar: FLOAT>>>);
-
-SELECT s, I, a[23]['foobar'].bar FROM toto
-```
+*   Persistent znodes:   
+    Persistent till manualy deleted
+*   Ephemeral znodes:   
+    Session lifecycle
+    Can't have children
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Metastore
+## Operations
 
-*   Database: namespace containing a set of tables
-*   Tables/partitions definitions   
-    (column types, HDFS directory of table)
-*   Stats
-*   Any RDBMS: derby, mySQL, postgreSQL, etc..
+*   Write:   
+    Create, delete, setData, setACL
+*   Read:   
+    Exists, getChildren, getData, getACL
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Inside HDFS
+## Wait, you said coordination
 
-*   Managed or external location
-*   Data Warehouse directory (DWH)  
-    Ex: /user/hive/warehouse
-*   Tables are subdirectory of DWH
-*   Partitions are subdirectories of DWH
-*   Data stored in files
-*   SequenceFiles, ORC, Parquet, Custom Ser/De
+*   For now, ZK is just a hierarchical database with access control
+*   How can it be used for coordination ?
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Basic Commands
+## Znode watches
 
-List tables/databases/function
-```
-hive> show databases;
-hive> show tables;
-```
-Describe tables/function
-```
-hive> describe $tablename
-hive> describe extended $tablename
-```
-SQL query
-```
-hive> SELECT * … LIMIT 10
-```
+*   ZK clients can subscribe to events:
+*   Node creation
+*   Node deletion
+*   Node data update
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Table Manipulation
+## ZK Guaranties
 
-*   CREATE
-*   SHOW
-*   ALTER
-*   DROP
+*   Eventual Consistency   
+    Inconsistency time window is bounded   
+    Same data regardless of the ZK server
+*   Sequential consistency   
+    Updates are applied in order
+*   Atomicity
+*   Reliability (updates persists)
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Create Tables
+## API bindings and client
 
-*   Not so hard   
-    CREATE TABLE foo (id INT, msg STRING);
-*   Default table layout   
-    Text files; fields delimited by \001; rows delimited by \n
-*   Should use more optimised layout
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Partitions
-
-*   HDFS directories
-*   Data pruning
-*   Static and dynamic partitions
-*   Don’t abuse (small files problem)
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Bucketing
- 
-*   Hash defined   
-*   Must be properly loaded: as many reducers as buckets   
-*   May be sorted
-*   May be combined with partitions
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Partitionning vs Bucketing
-
-CREATE 	TABLE order (
-username 	STRING,
-ord				STRING,
-amount		DOUBLE
-) PARTITIONED BY (company STRING)
-CLUSTERED BY (username) INTO 25 BUCKETS;
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Conclusion
-
-*   SQL over Hadoop
-*   Highly customizable
-*   MR compiler
-*   Wait… Did I say Map Reduce ?
+*   Official bindings   
+    Java, C, Perl, Python
+*   Community bindings (version dependent)   
+    Scala, C#, Node.js, Ruby, Erlang, Go, Haskell, etc…
+*   Shell Client (REPL)
 </script>
 </section>
 

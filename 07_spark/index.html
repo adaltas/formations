@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>ADALTAS - Hadoop</title>
+    <title>ADALTAS - Hive</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -45,280 +45,293 @@
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         
-<section data-markdown>
-<script type="text/template">
-# HDFS YARN MapReduce
-
-## A gentle introduction
-
-*   Get used to HDFS <!-- .element: class="fragment" -->
-*   Write your first MapReduce project <!-- .element: class="fragment" -->
-</script>
-</section>
-
 <section>
-<section data-markdown>
-<script type="text/template">
-## Big Data, a scaling problem
-</script>
-</section>
-<section data-markdown>
-<script type="text/template">
-### Vertical scale
-
-*   More powerful machine → Exponential cost
-*   Monolithic softwares
-</script>
-</section>
-<section data-markdown>
-<script type="text/template">
-### Horizontal scale
-
-*   More machines → Linear cost
-*   Distributed softwares
-</script>
-</section>
+<h1>Spark</h1>
+<h2>In memory processing</h2>
+<img src="./spark.png" style="border:none;background:transparent" />
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## How to distribute ?
+## Up until now
 
-*   Not an easy task
-*   Not always feasible
-*   Difficult to implement from scratch
+*   Cheap hard drives vs expansive RAM -> MapReduce
+*   Extensive I/O
+*   Limited to Map + Reduce &amp; Java
+*   Batch-processing
+*   Slow networks
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## HDFS Main Purpose
+## But today ?
 
-*   Distributed and replicated filesystem
-*   Handle disk and/or host crash
-*   Rack awareness
-*   Data locality
+*   RAM is cheap: 128GB of RAM servers !
+*   Virtual machines everywhere 
+*   Speedy network
+*   Multi-core machines
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## HDFS Implementation
+## In memory processing
 
-*   Master active/passive: metadata
-*   Worker nodes: raw data
-*   Default replication: 3
-*   Block size: 128MB
+*   Load your data once
+*   Use all of your cluster’s RAM
+*   Play with it for as long as you want
+*   Spill to disk when necessary
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## HDFS Misunderstanding
+## What is it ?
 
-*   WORM: write-once, read-many
-*   Don't support updates
-*   High throughput rather than low latency data access
-*   Not POSIX compliant
-</script>
-</section>
-
-<section>
-<h2>HDFS Architecture</h2>
-<img src="./hdfs.png" width="50%"/>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## HDFS
-
-*   Distributed and replicated filesystem
-*   Handle disk and/or host crash
-*   Master active/passive: metadata
-*   Worker nodes: raw data
-*   Default replication: 3
-*   Block size: 128MB
-*   Heterogeneous Storages
+*   In-memory processing engine 
+*   Unified platform for Big Data apps
+*   Runs on Hadoop (and other platforms)
+*   Access data from multiple sources     HDFS, HBase, Hive, Cassandra …
+*   100x faster than MR !
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## MapReduce Algorithm
+## In more details
 
-*   Very simple batch-oriented data processing model
-*   Highly scalable (20PB/day at Google in 2008)
-*   A reusable pattern → a generic framework can be implemented
+*   Developed at UC Berkeley 
+*   Written in Scala
+*   Open Source Apache project living on GitHub
+*   Current version : 1.6
+*   Distributed version : 1.4
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## MapReduce Basics
+## How to use it?
 
-*   Framework on top of HDFS
-*   Only need to implement Map() and Reduce()
-*   Execution is handled by the Framework
+*   Shells : 
+    *   spark-shell
+    *   pyspark 
+*   Submit a jar / python file :
+    spark-submit
+    Path to bins : /usr/hdp/current/spark-client/bin/*
+*   Interactive GUI: Zeppelin
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Multiple modes
+
+Argument : --master
+
+*   yarn-client : on yarn with localized driver
+*   yarn-cluster : on yarn with driver managed by Yarn
+*   local[X] : local mode with X cores
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Core principles
+
+*   Data stored in RDD for every different processing (Resilient Distributed Dataset)
+*   Apply two types of operations :
+    *   Transformations
+    *   Actions
+*   Lazy evaluation
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## RDD: Data Unification
+
+*   Immutable collection of objects
+*   Resilient : lost data can be recomputed
+*   Partitioned &amp; distributed on a cluster
 *   Fault tolerant
+*   Can be cached
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## MapReduce Principles
+## Transformation VS Action
 
-*   Input reader → list(k1,v1)   
-    &gt;1TB file(s) → indexed splits (64MB)
-*   Map(k1,v1) → list(k2,v2)
-*   Combine (local aggregation)
-*   Shuffle/sort
-*   Reduce(k2, list(v2)) → list(k3,v3)
-*   Output writer 
-</script>
-</section>
-
-<section>
-<h3>## MapReduce Phases</h3>
-<img src="./mr_phases.png" />
-</section>
-
-<section>
-<section data-markdown>
-<script type="text/template">
-## MapReduce Example
-
-*   Word Count (MR Hello World)
-*   Input file:
-
-> Hadoop uses MapReduce.    
-  There is a Map phase   
-  There is a Reduce phase
+*   Transformation : 
+    *   Create a new RDD from an existing one 
+    *   Ex: filter, map, …
+*   Action : 
+    *   Apply transformations &amp; generate an output
+    *   Ex: count, collect, …
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-### Input Reader
+## Lazy evaluation
 
-will split by line:
-
-1. Hadoop uses MapReduce
-2. There is a Map phase
-3. 
-4. There is a Reduce phase
+*   Computation happens when needed
+*   If a partition is lost, recompute it from the last point
+*   Optimize workflow
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-### Map
-
-X  Mappers called 4 times:
-
-1.  (Hadoop,1)   
-    (uses,1)   
-    (MapReduce,1)
-2. ...
-3. // Generates nothing
-4. ...
+## Questions
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## Partition &amp; Shuffle
+## Example : letter count
 
-*   (a,[1,1])
-*   (Hadoop,1)
-*   (is,1)
-*   (Map,1)
-*   (MapReduce,1)
-*   (phase,[1,1])
-*   (Reduce,1)
-*   (There,[1,1])
-*   (uses,1)
-</script>
-</section>
-<section data-markdown>
-<script type="text/template">
-### Reduce
+```scala
+// /usr/hdp/current/spark-client/bin/spark-shell
+val data = "this is a spark demonstration similar to a hello world!"
+val words = data.split(' ')
+val rdd = sc.parallelize(words)
 
-*   X Reduces called 9 times
-*   9 Reduces but not 9 reducers !!!
-*   Number of reducers can be specified
-*   The partitioner class handle distribution over reducers
+val letters = rdd.flatMap(_.toCharArray())
+letters.count()
+
+val pairs = letters.map(x => (x, 1))
+pairs.take(10)
+
+val result = pairs.reduceByKey(_+_)
+result.foreach(println)
+```
 
 </script>
 </section>
+
 <section data-markdown>
 <script type="text/template">
-### Reduce Output
+## Language Unification
 
-*   (a,2)
-*   (Hadoop,1)
-*   (is,1)
-*   (Map,1)
-*   (MapReduce,1)
-*   (phase,2)
-*   (Reduce,1)
-*   (There,2)
-*   (uses,2)
+*   Core APIs available for : 
+    *   Scala
+    *   Java
+    *   Python
+    *   SQL
+    *   R
 </script>
 </section>
+
 <section data-markdown>
 <script type="text/template">
-## Output Writer
+## Scala or  « Scalable Language »
+
+*   Object-oriented
+*   Functional 
+*   Type inferred
+*   Runs on the JVM
+*   Can use Java code
+
+-> Great for parallel computing !
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Functional language ?
+
+*   Immutable variables 
+*   Stateless functions
+*   Works well with HDFS, Parallelization and chained workflows
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Scala advanced example : parse a CSV manually
 
 ```
-a,2
-Hadoop,1
-is,1
-Map,1
-MapReduce,1
-phase,2
-Reduce,1
-There,2
-uses,2
+case class Cast(name:String, firstname:String, movie:String,year:Int)
+val file = sc.textFile("/res/spark_assignment/movies.csv")
+.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+val casts = file.map(line => {
+  val l = line.split(";")
+  Cast(l(0), l(1), l(2), l(3).toInt)
+})
+casts.filter(_.movie == "the dark knight").foreach(println)
 ```
 </script>
 </section>
-<section data-markdown>
-<script type="text/template">
-## Combiner
-
-*   Similar to reducer
-*   Between map and partition phase
-*   Optional step
-*   Less data on the wire
-</script>
-</section>
-</section>
 
 <section data-markdown>
 <script type="text/template">
-## YARN
+## Processing unification
 
-What Yet Another Resource Negotiator   
-(often called MapReduce 2.0) Does ?
+*   Multiple APIs : 
+*   SparkSQL -> Hive, Impala
+*   Spark Streaming -> Storm
+*   MLlib -> Mahout 
+*   GraphX -> Giraphe
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-## YARN Role
+## SparkSQL : Dataframes
 
-*   Dispatch Hadoop application
-*   Load-balancing (policy can be customized)
-*   Handle disk and/or host crash
-*   Can launch non-MR application
-*   Support Docker Container
-*   Node labels
+*   Higher level of abstraction
+*   RDD organized in columns
+*   Query data using SQL
+*   Constructed from data file, hive table, external DB, existing RDD 
 </script>
 </section>
 
-<section>
-<h2>YARN Architecture</h2>
-<img src="./yarn.gif"/>
+<section data-markdown>
+<script type="text/template">
+## SparkSQL Example
+
+```
+val castsDF = casts.toDF
+castsDF.printSchema castsDF.show
+castsDF.filter("movie = 'inception'").select('firstname, 'name).show
+castsDF.select('firstname, ‘name).distinct.show
+castsDF.groupBy('year).count().show()
+```
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
 </section>
 
       </div>
