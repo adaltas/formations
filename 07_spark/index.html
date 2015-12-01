@@ -294,7 +294,8 @@ casts.filter(_.movie == "the dark knight").foreach(println)
 
 ```
 val castsDF = casts.toDF
-castsDF.printSchema castsDF.show
+castsDF.printSchema
+ castsDF.show
 castsDF.filter("movie = 'inception'").select('firstname, 'name).show
 castsDF.select('firstname, ‘name).distinct.show
 castsDF.groupBy('year).count().show()
@@ -304,33 +305,13 @@ castsDF.groupBy('year).count().show()
 
 <section data-markdown>
 <script type="text/template">
-## 
+## Spark Streaming
 
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
+*   Real-time 
+*   Low latency &amp; high throughput
+*   Uses fast batch processing
+*   Implements window operations
+*   Can combine with classic RDD 
 </script>
 </section>
 
