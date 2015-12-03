@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>ADALTAS - Hive</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+  <div style="position:absolute; top:20px; left:20px;">
+  <p><img src="../img/adaltas.png" width="200px" style="margin: 10px 0" /></p>
+  </div>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+<section data-markdown>
+<script type="text/template">
+# Our Tech Radar
+
+What will we look at?
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Druid
+
+*   http://druid.io
+*   column-oriented distributed data store
+*   Sub-Second OLAP Queries
+*   Real-time Streams ingestion
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Hawq
+
+*   http://hawq.incubator.apache.org/
+*   MPP-based analytics performance
+*   robust ANSI SQL compliance
+*   Hadoop Yarn native integration
+*   Apache MADlib machine learning libraries 
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Ignite
+
+*   https://ignite.apache.org/
+*   In-Memory Data Fabric
+*   in-memory data grid as a key-value store
+*   Distributed in-memory file system (IGFS)
+*   HDFS Cache
+*   Shared RDDs
+*   Messaging &amp; CEP
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+  <h2>Architecture</h2>
+  <img src="./arch.png" style="border:none;background:transparent" />
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## What does it guarantee?
+
+*   Messages are passed/read in the order
+*   Fault tolerance
+*   No latency
+*   Messages are persisted and replicated
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## What is it for?
+
+*   Real-time stream processing 
+*   Message bus 
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Use case workflow
+
+Process application logs?
+*   Setup logging as kafka producers
+*   Topics for each app: stored and saved
+*   Spark-streaming as consumer to process logs as they come 
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## 
+
+
+</script>
+</section>
+
+      </div>
+
+    </div>
+
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
