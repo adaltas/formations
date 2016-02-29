@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>ADALTAS - Kafka</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+  <div style="position:absolute; top:20px; left:20px;">
+  <p><img src="../img/adaltas.png" width="200px" style="margin: 10px 0" /></p>
+  </div>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        
+        
+        
+        
+        
+<section>
+<h1>Kafka</h1>
+<h2>The High-Throughput Distributed Messaging System </h2>
+<img width="412" height="238" data-src="./kafka.png" style="border:none;background:transparent" />
+<h4><a href="http://kafka.apache.org" target="_blank">http://kafka.apache.org</a> </h4>
+
+</section>
+
+
+
+
+
+
+<section data-markdown style="text-align: left;">
+<script type="text/template">
+<h2> What is Kafka? </h2>
+Low latency publish-subscribe messaging system allowing real-time streaming data sources
+
+
+<p>
+<h4>   Kafka provides : </h4>
+
+<ul>
+	<li>Scalability</li>
+	<li>Durability</li>
+	<li>Reliability</li>
+	<li>High-Performance</li>
+</ul>
+</p>
+
+</script>
+</section>
+
+
+
+
+<section data-markdown>
+<script type="text/template">
+
+<h1> Kafka's core concepts </h1>
+
+
+</script>
+</section>
+
+
+
+
+
+
+
+
+<section data-markdown style="text-align: left;">
+<script type="text/template">
+
+
+
+
+
+  <table class="reveal">
+    <tr>
+    <td><img  width="1000" height="400" data-src="./arch1.png" style="border:none;background:transparent" /></td>
+      <td><ul>
+	<li> <strong> TOPICS </strong> : a user-defined category to which messages are published</li>
+	<li><strong> PRODUCERS  </strong>: publish messages to one or more topics</li>
+	<li><strong> CONSUMERS  </strong>: subscribe to topics and process published messages</li>
+	<li><strong> BROKERS  </strong>: Kafka servers that manage the persistence and replication of message data </li>
+</ul></td>
+      
+    </tr>
+  </table>
+  
+  
+</script>
+</section>
+
+
+
+
+
+
+<section data-markdown >
+
+<script type="text/template" >
+
+<h2> Anatomy of a topic : partitions</h2>
+
+  <table class="reveal">
+    <tr>
+    <td>  
+<p> <strong>To allow parallelism, TOPICS</strong> are split into <strong> PARTITIONS</strong>.  </p>
+<p>  <strong> PARTITIONS</strong> are ordered and immutable sequence of messages that is continually appended to. </p>
+<p>  Partitions are replicated to ensure fault-tolerance. </p>
+</td>
+
+      
+    </tr>
+  </table>
+
+<img class="stretch"  width="450" height="300" data-src="./topic2.png" style="border:none;background:transparent" />
+
+Numbers of partitions of a topic is configurable
+
+</script>
+</section>
+
+<section data-markdown style="text-align: left;">
+
+<script type="text/template" >
+
+<h3> Anatomy of a topic : leader of a partition </h3>
+
+<p> Each partition has one broker which acts as the "leader" and zero or more brokers which act as "followers". </p>
+
+<p>
+<ul>
+	<li> <strong> LEADER  </strong> : handles all read and write requests for the partition</li>
+	<li><strong> FOLLOWER   </strong>: passively replicate the leader</li>
+
+</ul>
+</p>
+
+<p>Each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster. </p>
+
+</script>
+</section>
+
+
+
+<section data-markdown >
+
+<script type="text/template" >
+
+<h2> Anatomy of a topic : writes / reads </h2>
+
+<p> Producers always append to tail </p>
+
+<img class="stretch"  width="500" height="100" data-src="./topic3.png" style="border:none;background:transparent" />
+
+<p> Consumers use an “offset pointer” to track their read progress </p>
+ <p>A consumer can reset to an older offset to reprocess.</p>
+
+<img class="stretch"  width="500" height="100" data-src="./topic4.png" style="border:none;background:transparent" />
+</script>
+</section>
+
+
+
+<section data-markdown >
+
+<script type="text/template" >
+
+<h2> Consumer group </h2>
+
+<p>Consumers label themselves with a consumer group name.</p> 
+<p>Each message published to a topic is delivered to <strong>ONE</strong> consumer instance within each subscribing consumer group.</p> 
+<img class="stretch"  width="500" height="100" data-src="./consumergroup.png" style="border:none;background:transparent" />
+
+ <p> This is finally publish-subscribe system where the subscriber is cluster of consumers instead of a single instance.</p> 
+</script>
+</section>
+
+
+
+<section data-markdown >
+
+<script type="text/template" >
+
+<p>Brokers and Consumers need Zookeeper to manage and share state</p>
+
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+
+<p><img class="stretch"  width="500" height="500" data-src="./recap.png" style="border:none;background:transparent" /></p>
+
+
+</script>
+</section>
+
+<section data-markdown >
+<script type="text/template">
+<h3> Keys of Kafka's high performance</h3>
+
+<h5>Fast writes : </h5>
+
+<ul>
+	<li>While Kafka persists all data to disk, essentially all writes go to the
+page cache of OS, i.e. RAM</li>
+	<li>Since writes to a partition are sequential, this design greatly reduces the number of hard disk seeks </li>
+</ul>
+<p>
+<h5>Fast reads : </h5>
+</p>
+<ul>
+	<li>Very efficient to transfer data from page cache to a network socket </li>
+	<li>Each consumer is responsible for keeping track of what messages it has consumed</li>
+
+</ul>
+
+</script>
+</section>
+
+<section data-markdown >
+<script type="text/template">
+
+
+
+  <img  width="270" height="200" data-src="./warning.png" style="border:none;background:transparent" />
+      <p>
+      At the moment there's basically no security built-in
+      </p>
+      
+
+  
+</script>
+</section>
+
+
+
+
+
+
+
+
+<section data-markdown>
+<script type="text/template">
+
+<h4>   Commons uses of Kafka : </h4>
+<ul>
+	<li>Website activity tracking</li>
+	<li>Operational metrics</li>
+	<li>Log aggregation</li>
+	<li>Real-time stream processing</li>
+	<li>Message bus</li>
+</ul>
+
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+
+<h1> Running Kafka </h1>
+
+<h3> LinkedIn's example </h3>
+
+</script>
+</section>
+
+
+
+
+<section data-markdown>
+<script type="text/template">
+
+<h2> Kafka at LinkedIn </h2>
+
+  <table class="reveal">
+    <tr>
+    <td>  
+<ul>
+	<li>300+ Kafka brokers</li>
+	<li>18 000+ topics split into 180 000+ partitions</li>
+</ul>
+
+<ul>
+	<li>220 B of event / day ~ 2.5 M / s</li>
+	<li>Write 40Tb of data / day</li>
+	<li>Read 160Tb of data / day</li>
+</ul>
+</td>
+</tr>
+</table>
+
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+
+<h1> Operating Kafka </h1>
+
+<h3> Typical operations </h3>
+
+</script>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+
+<h3>Manage Topics</h3>
+<h5>Create topic:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./create.png" style="border:none;background:transparent" /></p>
+
+<h5>Add partitions:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./addpartition.png" style="border:none;background:transparent" /></p>
+
+
+<h5>Describe topic:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./describetopic.png" style="border:none;background:transparent" /></p>
+</script>
+
+</section>
+
+<section data-markdown>
+<script type="text/template">
+
+<h3>Manage Producer</h3>
+<h5>Create producer:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./createproducer.png" style="border:none;background:transparent" /></p>
+
+<p>
+Two types of producers :
+<ul>
+	<li>sync : to write one message at a time</li>
+	<li>async : to batch messages </li>
+</ul>
+</p>
+<h5>Write data :</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./writedata.png" style="border:none;background:transparent" /></p>
+
+
+
+</script>
+
+
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+
+<h3>Manage Consumer</h3>
+<h5>Create consumer:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./createconsumer.png" style="border:none;background:transparent" /></p>
+
+<h5>Subscribe to a topic:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./subscribe.png" style="border:none;background:transparent" /></p>
+
+
+<h5>Read data:</h5>
+<p><img class="stretch"  width="500" height="50" data-src="./read.png" style="border:none;background:transparent" /></p>
+</script>
+
+
+
+
+      </div>
+
+    </div>
+
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
