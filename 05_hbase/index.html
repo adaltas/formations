@@ -44,7 +44,7 @@
 
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
-        
+
 <section>
 <h1>HBase</h1>
 <h2>Low latency, columnar Database</h2>
@@ -55,14 +55,14 @@
 <script type="text/template">
 ## Prerequisite
 
-CAP Theorem   
-It is impossible for a distributed system to be
+CAP Theorem  
+It is impossible for a distributed system to be:
 
-*   Consistent   
+*   **Consistent**  
 all nodes see the same data at the same time
-*   Available   
+*   **Available**  
 a guarantee that every request receives a response about whether it succeeded or failed
-*   Partition tolerant   
+*   **Partition tolerant**  
 the system continues to operate despite arbitrary partitioning due to network failures
 </script>
 </section>
@@ -121,12 +121,12 @@ the system continues to operate despite arbitrary partitioning due to network fa
 *   Store user information and friends
 *   Key: username
 *   Column families: info and friends
-*   inside “info”: 
-*   columns: properties (eg email)
-*   values: property values
-*   inside friends: 
-*   columns: friends username
-*   values: age, phone number, whatever
+*   inside “info”:
+  *   columns: properties (eg email)
+  *   values: property values
+*   inside friends:
+  *   columns: friends username
+  *   values: age, phone number, whatever
 </script>
 </section>
 
@@ -212,9 +212,9 @@ the system continues to operate despite arbitrary partitioning due to network fa
 ## Data Insertion
 
 *   Not atomic !!!
-*   HBase keeps 3 versions of your data   
-    (using timestamp as a subkey)   
-    get latest value by default
+*   HBase keeps 3 versions of your data  
+    (using timestamp as a subkey)  
+    get latest value by default  
 *   No need to fill all columns nor Cfs
 </script>
 </section>
@@ -233,13 +233,13 @@ the system continues to operate despite arbitrary partitioning due to network fa
 <script type="text/template">
 ## Basic Operations
 
-*   Create a table:   
-    create 'pierrotws', 'info'   
-    alter 'pierrotws', 'friends'   
-*   View table structure:   
-    describe 'pierrotws'    
-*   Remove a table:   
-    disable + drop 'pierrotws'   
+*   Create a table:  
+    create 'pierrotws', 'info'  
+    alter 'pierrotws', 'friends'
+*   View table structure:  
+    describe 'pierrotws'
+*   Remove a table:  
+    disable + drop 'pierrotws'
 </script>
 </section>
 
@@ -247,14 +247,14 @@ the system continues to operate despite arbitrary partitioning due to network fa
 <script type="text/template">
 ## Example
 
-Inserting   
+Inserting
 ```
 put 'pierrotws', 'pierre', 'friends:ninon', '1990-11-26'
 put 'pierrotws', 'pierre', 'friends:jeanne', '1995-03-01'
 put 'pierrotws', 'pierre', 'info:email', 'pierrotws@adaltas.com'
 put 'pierrotws', 'pierre', 'info:age', '24'
 ```
-Getting   
+Getting
 ```
 scan 'pierrotws'
 ```
@@ -271,10 +271,10 @@ scan 'pierrotws'
 <script type="text/template">
 ## Sharding
 
-*   Tables are splitted into Regions
+*   Tables are split into Regions
 *   Regions defined by start/end of keys
-*   Regions are assigned to RegionServers (workers of HBase, eq. 
-    to NodeManagers for YARN, DataNodes for HDFS)
+*   Regions are assigned to RegionServers  
+    (workers of HBase, eq. to NodeManagers for YARN, DataNodes for HDFS)
 </script>
 </section>
 
@@ -282,12 +282,12 @@ scan 'pierrotws'
 <script type="text/template">
 ## HFDS Storage
 
-*   Hfile   
-    Optimised SequenceFile containing Index and data   
-    Use tombstone marker for deletion (HDFS cannot update a file)   
-    Post 'insert' compaction algorithm to optimize storage   
-*   Edit logs   
-*   In-memory cache   
+*   Hfile:  
+    Optimised SequenceFile containing Index and data  
+    Use tombstone marker for deletion (HDFS cannot update a file)  
+    Post 'insert' compaction algorithm to optimize storage
+*   Edit logs
+*   In-memory cache
 </script>
 </section>
 
