@@ -44,366 +44,247 @@
 
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
-        
-        
-        
-        
-        
-<section>
-<h1>Kafka</h1>
-<h2>The High-Throughput Distributed Messaging System </h2>
-<img width="412" height="238" data-src="./kafka.png" style="border:none;background:transparent" />
-<h4><a href="http://kafka.apache.org" target="_blank">http://kafka.apache.org</a> </h4>
 
+<section data-markdown >
+<script type="text/template">
+# Kafka
+
+### The High-Throughput Distributed Messaging System
+
+<img width="412" height="238" data-src="./kafka.png" style="border:none;background:transparent;box-shadow:none" />
+
+#### [http://kafka.apache.org](http://kafka.apache.org)
+</script>
 </section>
-
-
-
-
 
 
 <section data-markdown style="text-align: left;">
 <script type="text/template">
-<h2> What is Kafka? </h2>
+## What is Kafka?
 Low latency publish-subscribe messaging system allowing real-time streaming data sources
 
+#### Kafka provides
 
-<p>
-<h4>   Kafka provides : </h4>
-
-<ul>
-	<li>Scalability</li>
-	<li>Durability</li>
-	<li>Reliability</li>
-	<li>High-Performance</li>
-</ul>
-</p>
-
+* Scalability
+* Durability
+* Reliability
+* High-Performance
 </script>
 </section>
 
 
+<section data-markdown>
+<script type="text/template">
+## Kafka's core concepts
+</script>
+</section>
 
 
 <section data-markdown>
 <script type="text/template">
 
-<h1> Kafka's core concepts </h1>
+<img width="40%" data-src="./arch1.png" style="border:none;background:transparent" />
 
-
+* Topics: a user-defined category to which messages are published
+* Producers: publish messages to one or more topics
+* Consumers: subscribe to topics and process published messages
+* Brokers: Kafka servers that manage the persistence and replication of message data
 </script>
 </section>
-
-
-
-
-
-
-
-
-<section data-markdown style="text-align: left;">
-<script type="text/template">
-
-
-
-
-
-  <table class="reveal">
-    <tr>
-    <td><img  width="1000" height="400" data-src="./arch1.png" style="border:none;background:transparent" /></td>
-      <td><ul>
-	<li> <strong> TOPICS </strong> : a user-defined category to which messages are published</li>
-	<li><strong> PRODUCERS  </strong>: publish messages to one or more topics</li>
-	<li><strong> CONSUMERS  </strong>: subscribe to topics and process published messages</li>
-	<li><strong> BROKERS  </strong>: Kafka servers that manage the persistence and replication of message data </li>
-</ul></td>
-      
-    </tr>
-  </table>
-  
-  
-</script>
-</section>
-
-
-
-
 
 
 <section data-markdown >
-
 <script type="text/template" >
+### Anatomy of a topic: partitions
 
-<h2> Anatomy of a topic : partitions</h2>
+* To allow parallelism, TOPICS are split into PARTITIONS
+* PARTITIONS are ordered and immutable sequences of messages that are continually appended to
+* PARTITIONS are replicated to ensure fault-tolerance
 
-  <table class="reveal">
-    <tr>
-    <td>  
-<p> <strong>To allow parallelism, TOPICS</strong> are split into <strong> PARTITIONS</strong>.  </p>
-<p>  <strong> PARTITIONS</strong> are ordered and immutable sequence of messages that is continually appended to. </p>
-<p>  Partitions are replicated to ensure fault-tolerance. </p>
-</td>
+<img src="./topic2.png" style="border:none;background:transparent;box-shadow:none" width="40%"/>
 
-      
-    </tr>
-  </table>
-
-<img class="stretch"  width="450" height="300" data-src="./topic2.png" style="border:none;background:transparent" />
-
-Numbers of partitions of a topic is configurable
-
+The number of partitions of a topic is configurable
 </script>
 </section>
 
-<section data-markdown style="text-align: left;">
 
+<section data-markdown>
 <script type="text/template" >
+### Anatomy of a topic : partition leader
 
-<h3> Anatomy of a topic : leader of a partition </h3>
+<p  style="text-align: left;">Each partition has one broker which acts as the "leader" and zero or more brokers which act as "followers"</p>
 
-<p> Each partition has one broker which acts as the "leader" and zero or more brokers which act as "followers". </p>
+* LEADER: handles all read and write requests for the partition
+* FOLLOWER: passively replicate the leader
 
-<p>
-<ul>
-	<li> <strong> LEADER  </strong> : handles all read and write requests for the partition</li>
-	<li><strong> FOLLOWER   </strong>: passively replicate the leader</li>
-
-</ul>
-</p>
-
-<p>Each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster. </p>
+<p style="text-align: left;">Each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster</p>
 
 </script>
 </section>
 
 
-
 <section data-markdown >
-
 <script type="text/template" >
+### Anatomy of a topic : writes / reads
 
-<h2> Anatomy of a topic : writes / reads </h2>
+Producers always append to the tail
 
-<p> Producers always append to tail </p>
+<img class="stretch"  width="50%" data-src="./topic3.png" style="border:none;background:transparent;box-shadow:none" />
 
-<img class="stretch"  width="500" height="100" data-src="./topic3.png" style="border:none;background:transparent" />
+* Consumers use “offset pointers” to track their read progress
+* A consumer can reset to an older offset to reprocess
 
-<p> Consumers use an “offset pointer” to track their read progress </p>
- <p>A consumer can reset to an older offset to reprocess.</p>
+<img class="stretch"  width="35%" data-src="./topic4.png" style="border:none;background:transparent;box-shadow:none" />
 
-<img class="stretch"  width="500" height="100" data-src="./topic4.png" style="border:none;background:transparent" />
 </script>
 </section>
 
 
-
 <section data-markdown >
-
 <script type="text/template" >
+## Consumer group
 
-<h2> Consumer group </h2>
+* Consumers label themselves with a consumer group name
+* Messages published to a topic are delivered to ONE consumer instance within each subscribing consumer group
 
-<p>Consumers label themselves with a consumer group name.</p> 
-<p>Each message published to a topic is delivered to <strong>ONE</strong> consumer instance within each subscribing consumer group.</p> 
-<img class="stretch"  width="500" height="100" data-src="./consumergroup.png" style="border:none;background:transparent" />
+<img class="stretch"  width="30%" data-src="./consumergroup.png" style="border:none;background:transparent" />
 
- <p> This is finally publish-subscribe system where the subscriber is cluster of consumers instead of a single instance.</p> 
+* This is finally publish-subscribe system where the subscriber is cluster of consumers instead of a single instance
 </script>
 </section>
 
 
-
 <section data-markdown >
-
 <script type="text/template" >
+#### Brokers and Consumers need Zookeeper to manage and share state
 
-<p>Brokers and Consumers need Zookeeper to manage and share state</p>
-
+<img data-src="./recap.png" style="border:none;background:transparent" width="60%" />
 </script>
 </section>
 
 
-<section data-markdown>
+<section data-markdown >
 <script type="text/template">
+### Keys of Kafka's high performance
 
-<p><img class="stretch"  width="500" height="500" data-src="./recap.png" style="border:none;background:transparent" /></p>
+##### Fast writes
 
+* While Kafka persists all data to disk, essentially all writes go to the page cache of OS, i.e. RAM
+* Since writes to a partition are sequential, this design greatly reduces the number of hard disk seeks
 
+##### Fast reads
+
+* Very efficient to transfer data from page cache to a network socket
+* Each consumer is responsible for keeping track of what messages it has consumed
 </script>
 </section>
 
 <section data-markdown >
 <script type="text/template">
-<h3> Keys of Kafka's high performance</h3>
+<img  width="270" height="200" data-src="./warning.png" style="border:none;background:transparent;box-shadow:none" />
 
-<h5>Fast writes : </h5>
-
-<ul>
-	<li>While Kafka persists all data to disk, essentially all writes go to the
-page cache of OS, i.e. RAM</li>
-	<li>Since writes to a partition are sequential, this design greatly reduces the number of hard disk seeks </li>
-</ul>
-<p>
-<h5>Fast reads : </h5>
-</p>
-<ul>
-	<li>Very efficient to transfer data from page cache to a network socket </li>
-	<li>Each consumer is responsible for keeping track of what messages it has consumed</li>
-
-</ul>
-
-</script>
-</section>
-
-<section data-markdown >
-<script type="text/template">
-
-
-
-  <img  width="270" height="200" data-src="./warning.png" style="border:none;background:transparent" />
-      <p>
-      At the moment there's basically no security built-in
-      </p>
-      
-
-  
-</script>
-</section>
-
-
-
-
-
-
-
-
-<section data-markdown>
-<script type="text/template">
-
-<h4>   Commons uses of Kafka : </h4>
-<ul>
-	<li>Website activity tracking</li>
-	<li>Operational metrics</li>
-	<li>Log aggregation</li>
-	<li>Real-time stream processing</li>
-	<li>Message bus</li>
-</ul>
-
+At the moment there's basically no security built-in
 </script>
 </section>
 
 
 <section data-markdown>
 <script type="text/template">
+### Common uses of Kafka
 
-<h1> Running Kafka </h1>
-
-<h3> LinkedIn's example </h3>
-
+* Website activity tracking
+* Operational metrics
+* Log aggregation
+* Real-time stream processing
+* Message bus
 </script>
-</section>
-
-
-
-
-<section data-markdown>
-<script type="text/template">
-
-<h2> Kafka at LinkedIn </h2>
-
-  <table class="reveal">
-    <tr>
-    <td>  
-<ul>
-	<li>300+ Kafka brokers</li>
-	<li>18 000+ topics split into 180 000+ partitions</li>
-</ul>
-
-<ul>
-	<li>220 B of event / day ~ 2.5 M / s</li>
-	<li>Write 40Tb of data / day</li>
-	<li>Read 160Tb of data / day</li>
-</ul>
-</td>
-</tr>
-</table>
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-
-<h1> Operating Kafka </h1>
-
-<h3> Typical operations </h3>
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-
-<h3>Manage Topics</h3>
-<h5>Create topic:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./create.png" style="border:none;background:transparent" /></p>
-
-<h5>Add partitions:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./addpartition.png" style="border:none;background:transparent" /></p>
-
-
-<h5>Describe topic:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./describetopic.png" style="border:none;background:transparent" /></p>
-</script>
-
-</section>
-
-<section data-markdown>
-<script type="text/template">
-
-<h3>Manage Producer</h3>
-<h5>Create producer:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./createproducer.png" style="border:none;background:transparent" /></p>
-
-<p>
-Two types of producers :
-<ul>
-	<li>sync : to write one message at a time</li>
-	<li>async : to batch messages </li>
-</ul>
-</p>
-<h5>Write data :</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./writedata.png" style="border:none;background:transparent" /></p>
-
-
-
-</script>
-
-
 </section>
 
 
 <section data-markdown>
 <script type="text/template">
+# Running Kafka
 
-<h3>Manage Consumer</h3>
-<h5>Create consumer:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./createconsumer.png" style="border:none;background:transparent" /></p>
-
-<h5>Subscribe to a topic:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./subscribe.png" style="border:none;background:transparent" /></p>
+### LinkedIn's example
+</script>
+</section>
 
 
-<h5>Read data:</h5>
-<p><img class="stretch"  width="500" height="50" data-src="./read.png" style="border:none;background:transparent" /></p>
+<section data-markdown>
+<script type="text/template">
+### Kafka at LinkedIn
+
+* 300+ Kafka brokers
+* 18 000+ topics split into 180 000+ partitions
+* 220 B of event / day ~ 2.5 M / s
+* Write 40Tb of data / day
+* Read 160Tb of data / day
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+# Operating Kafka
+
+### Typical operations
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Topics
+
+##### Create topic
+
+<img data-src="./create.png" style="border:none;background:transparent" />
+
+##### Add partitions
+<img data-src="./addpartition.png" style="border:none;background:transparent" />
+
+##### Describe topic
+<img data-src="./describetopic.png" style="border:none;background:transparent" />
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Producer
+##### Create producer
+<img width="50%" data-src="./createproducer.png" style="border:none;background:transparent" />
+
+There's two types of producers
+
+* sync : to write one message at a time
+* async : to batch messages
+
+##### Write data
+<img data-src="./writedata.png" style="border:none;background:transparent" />
+
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Consumer
+
+##### Create consumer
+<img width="48%" data-src="./createconsumer.png" style="border:none;background:transparent" />
+
+##### Subscribe to a topic
+<img width="48%" data-src="./subscribe.png" style="border:none;background:transparent" />
+
+##### Read data
+<img width="48%" data-src="./read.png" style="border:none;background:transparent" />
 </script>
 
 
 
 
       </div>
-
     </div>
 
     <script src="../reveal.js/lib/js/head.min.js"></script>
