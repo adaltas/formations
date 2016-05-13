@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>ADALTAS - Hive</title>
+    <title>ADALTAS - Kafka</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -44,130 +44,309 @@
 
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
-        
-<section>
-<h1>Kafka</h1>
-<h2>The Distributed Commit Log</h2>
-<img src="./kafka.png" style="border:none;background:transparent" />
+
+<section data-markdown >
+<script type="text/template">
+# Kafka
+
+### The High-Throughput Distributed Messaging System
+
+<img width="412" height="238" data-src="./kafka.png" style="border:none;background:transparent;box-shadow:none" />
+
+#### [http://kafka.apache.org](http://kafka.apache.org)
+</script>
 </section>
+
+
+<section data-markdown style="text-align: left;">
+<script type="text/template">
+## What is Kafka?
+Low latency publish-subscribe messaging system allowing real-time streaming data sources
+
+#### Kafka provides
+
+* Scalability
+* Durability
+* Reliability
+* High-Performance
+</script>
+</section>
+
 
 <section data-markdown>
 <script type="text/template">
-## What is it?
+## Kafka's core concepts
+</script>
+</section>
 
-*   High-throughput, distributed, publish-subscribe messaging system.
-*   Feeds of messages maintained in topics
-*   Producers write data
-*   Consumers read from topic
-*   Each server is called a broker
-*   Each broker can handle TeraBytes of data!
+
+<section data-markdown>
+<script type="text/template">
+
+<img width="40%" data-src="./arch.png" style="border:none;background:transparent" />
+
+* Topics: a user-defined category to which messages are published
+* Producers: publish messages to one or more topics
+* Consumers: subscribe to topics and process published messages
+* Brokers: Kafka servers that manage the persistence and replication of message data
+</script>
+</section>
+
+
+<section data-markdown >
+<script type="text/template" >
+### Anatomy of a topic: partitions
+
+* To allow parallelism, TOPICS are split into PARTITIONS
+* PARTITIONS are ordered and immutable sequences of messages that are continually appended to
+* PARTITIONS are replicated to ensure fault-tolerance
+
+<img src="./topic2.png" style="border:none;background:transparent;box-shadow:none" width="40%"/>
+
+The number of partitions of a topic is configurable
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template" >
+### Anatomy of a topic : partition leader
+
+<p  style="text-align: left;">Each partition has one broker which acts as the "leader" and zero or more brokers which act as "followers"</p>
+
+* LEADER: handles all read and write requests for the partition
+* FOLLOWER: passively replicate the leader
+
+<p style="text-align: left;">Each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster</p>
+
+</script>
+</section>
+
+
+<section data-markdown >
+<script type="text/template" >
+### Anatomy of a topic : writes / reads
+
+<!-- <img class="stretch"  width="50%" data-src="./topic3.png" style="border:none;background:transparent;box-shadow:none" /> -->
+
+* Producers always append to the tail
+* Consumers use “offset pointers” to track their read progress
+* A consumer can reset to an older offset to reprocess
+
+<!-- <img class="stretch"  width="35%" data-src="./topic4.png" style="border:none;background:transparent;box-shadow:none" /> -->
+<img class="stretch"  width="65%" data-src="./topic.png" style="border:none;background:transparent;box-shadow:none" />
+
+</script>
+</section>
+
+
+<section data-markdown >
+<script type="text/template" >
+## Consumer group
+
+* Consumers label themselves with a consumer group name
+* Messages published to a topic are delivered to ONE consumer instance within each subscribing consumer group
+
+<img class="stretch"  width="30%" data-src="./consumergroup.png" style="border:none;background:transparent" />
+
+* This is finally publish-subscribe system where the subscriber is cluster of consumers instead of a single instance
+</script>
+</section>
+
+
+<section data-markdown >
+<script type="text/template" >
+#### Brokers and Consumers need Zookeeper to manage and share state
+
+<img data-src="./recap.png" style="border:none;background:transparent" width="70%" />
+</script>
+</section>
+
+
+<section data-markdown >
+<script type="text/template">
+### Keys of Kafka's high performance
+
+##### Fast writes
+
+* While Kafka persists all data to disk, essentially all writes go to the page cache of OS, i.e. RAM
+* Since writes to a partition are sequential, this design greatly reduces the number of hard disk seeks
+
+##### Fast reads
+
+* Very efficient to transfer data from page cache to a network socket
+* Each consumer is responsible for keeping track of what messages it has consumed
+</script>
+</section>
+
+<section data-markdown >
+<script type="text/template">
+<img  width="270" height="200" data-src="./warning.png" style="border:none;background:transparent;box-shadow:none" />
+
+At the moment there's basically no security built-in
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Common uses of Kafka
+
+* Website activity tracking
+* Operational metrics
+* Log aggregation
+* Real-time stream processing
+* Message bus
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+# Running Kafka
+
+### LinkedIn's example
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Kafka at LinkedIn
+
+* 300+ Kafka brokers
+* 18 000+ topics split into 180 000+ partitions
+* 220 B of event / day ~ 2.5 M / s
+* Write 40Tb of data / day
+* Read 160Tb of data / day
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+# Operating Kafka
+
+### Typical operations
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Topics
+
+##### Create topic
+
+```bash
+bin/kafka-topics.sh --zookeeper zk_host:port/chroot --create
+  --topic my_topic_name --partitions 20 --replication-factor 3
+  --config x=y
+```
+
+##### Add partitions
+```bash
+bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic
+  my_topic_name --partitions 40
+```
+
+##### Describe topic
+```bash
+bin/kafka-topics.sh --describe --zookeeper zk_host:port/chroot
+  --topic my_topic_name
+```
+
+##### Delete topic
+```bash
+bin/kafka-topics.sh --delete --zookeeper zk_host:port/chroot
+  --topic my_topic_name
+```
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Producers
+
+There's two types of producers:
+
+* sync : to write one message at a time
+* async : to batch messages
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Producers
+
+##### Create a producer
+
+```java
+Properties props = new Properties();
+props.put("producer.type", "async");
+ProducerConfig = new ProducerConfig(props);
+```
+
+##### Write data
+```java
+KeyedMessage<String, String> data =
+  new KeyedMessage<String, String>("page_visits", ip, msg);
+producer.send(data);
+```
+</script>
+</section>
+
+
+<section data-markdown>
+<script type="text/template">
+### Manage Consumers
+
+##### Create a consumer
+```java
+Properties props = new Properties();
+props.put("bootstrap.servers", "localhost:9092");
+props.put("group.id", "consumer-tutorial");
+props.put("key.deserializer", StringDeserializer.class.getName());
+props.put("value.deserializer", StringDeserializer.class.getName());
+KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+```
+
+##### Subscribe to a topic
+```java
+consumer.subscribe(Arrays.asList("foo", "bar"));
+```
 </script>
 </section>
 
 <section data-markdown>
 <script type="text/template">
-  <h2>Architecture</h2>
-  <img src="./arch.png" style="border:none;background:transparent" />
+### Manage Consumers
+
+##### Read data
+```java
+try {
+  while(true) {
+    ConsumerRecords<String, String> records =
+      consumer.poll(Long.MAX_VALUE);
+    for(ConsumerRecords<String, String> record : records) {
+      System.out.println(record.offset() + ": " + record.value());
+    }
+  }
+} catch (WakeupException e) {
+  // ignore for shutdown
+} finally {
+  consumer.close();
+}
+```
 </script>
 </section>
 
-<section data-markdown>
-<script type="text/template">
-## What does it guarantee?
-
-*   Messages are passed/read in the order
-*   Fault tolerance
-*   No latency
-*   Messages are persisted and replicated
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## What is it for?
-
-*   Real-time stream processing 
-*   Message bus 
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## Use case workflow
-
-Process application logs?
-*   Setup logging as kafka producers
-*   Topics for each app: stored and saved
-*   Spark-streaming as consumer to process logs as they come 
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
 
 
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
-
-<section data-markdown>
-<script type="text/template">
-## 
-
-
-</script>
-</section>
 
       </div>
-
     </div>
 
     <script src="../reveal.js/lib/js/head.min.js"></script>
